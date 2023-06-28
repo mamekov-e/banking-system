@@ -1,9 +1,11 @@
-package org.example.banking_system;
+package org.example.models.bank_only;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Optional;
+
+import static org.example.constants.ValidationValues.CONDITION_FAILED_VALUE;
 
 @Data
 @NoArgsConstructor
@@ -13,7 +15,7 @@ public class ATM {
 
     protected ATM(Bank bank) {
         this.bank = bank;
-        this.sessionAccountNumber = -1;
+        this.sessionAccountNumber = CONDITION_FAILED_VALUE;
     }
 
     public boolean loginToAccount(int acctNum) {
@@ -28,7 +30,7 @@ public class ATM {
 
     public boolean deposit(int amount) {
         boolean deposited = false;
-        if (sessionAccountNumber != -1) {
+        if (sessionAccountNumber != CONDITION_FAILED_VALUE) {
             deposited = bank.updateAcctBal(sessionAccountNumber, amount);
         }
 
@@ -37,7 +39,7 @@ public class ATM {
 
     public boolean withdraw(int amount) {
         boolean deposited = false;
-        if (sessionAccountNumber != -1) {
+        if (sessionAccountNumber != CONDITION_FAILED_VALUE) {
             deposited = bank.updateAcctBal(sessionAccountNumber, -amount);
         }
 
@@ -45,7 +47,7 @@ public class ATM {
     }
 
     public int getBalance() {
-        if (sessionAccountNumber == -1) {
+        if (sessionAccountNumber == CONDITION_FAILED_VALUE) {
             return 0;
         }
         Account account = bank.accessAcctInfo(sessionAccountNumber);
@@ -53,10 +55,10 @@ public class ATM {
     }
 
     public boolean logout() {
-        if (sessionAccountNumber == -1) {
+        if (sessionAccountNumber == CONDITION_FAILED_VALUE) {
             return false;
         }
-        sessionAccountNumber = -1;
+        sessionAccountNumber = CONDITION_FAILED_VALUE;
         return true;
     }
 }

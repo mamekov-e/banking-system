@@ -1,12 +1,14 @@
-package org.example.outside;
+package org.example.models.public_;
 
-import org.example.banking_system.ATM;
-import org.example.banking_system.Bank;
+import org.example.models.bank_only.ATM;
+import org.example.models.bank_only.Bank;
+
+import static org.example.constants.ValidationValues.CONDITION_FAILED_VALUE;
 
 public class Customer {
     private final Bank bank;
     private ATM bankAtm;
-    private int accountNumber = -1;
+    private int accountNumber = CONDITION_FAILED_VALUE;
 
     public Customer(Bank bank) {
         this.bank = bank;
@@ -14,7 +16,7 @@ public class Customer {
 
     public void openAccount() {
         System.out.println("***** Creating account...");
-        if (accountNumber == -1) {
+        if (accountNumber == CONDITION_FAILED_VALUE) {
             accountNumber = bank.createAccount();
             bankAtm = bank.getAtm();
             System.out.println("Account successfully created!");
@@ -24,9 +26,6 @@ public class Customer {
     }
 
     public void depositMoney(int amount) {
-        if (isAccountCreated())
-            return;
-
         login();
 
         System.out.printf("***** Depositing money: %dtg...\n", amount);
@@ -37,10 +36,14 @@ public class Customer {
     }
 
     public void withdrawMoney(int amount) {
-        if (isAccountCreated())
-            return;
-
         login();
+
+        int balance = bankAtm.getBalance();
+        if (amount > balance) {
+            System.out.println("Not enough money in account!");
+            logout();
+            return;
+        }
 
         System.out.printf("***** Withdrawing money: %dtg...\n", amount);
         boolean withdrawn = bankAtm.withdraw(amount);
@@ -50,9 +53,6 @@ public class Customer {
     }
 
     public int checkBalance() {
-        if (isAccountCreated())
-            return -1;
-
         login();
 
         System.out.println("***** Getting balance...");
@@ -62,14 +62,6 @@ public class Customer {
         logout();
 
         return accountBalance;
-    }
-
-    private boolean isAccountCreated() {
-        if (bankAtm == null) {
-            System.out.println("Create account first using method: openAccount()!");
-            return true;
-        }
-        return false;
     }
 
     private void login() {

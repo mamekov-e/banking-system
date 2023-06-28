@@ -1,4 +1,4 @@
-package org.example.banking_system;
+package org.example.models.bank_only;
 
 import lombok.Data;
 import org.example.exceptions.AccountNotFoundException;
