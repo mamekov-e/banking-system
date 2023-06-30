@@ -1,55 +1,23 @@
 package org.example.models.bank_only;
 
 import lombok.Data;
-import org.example.exceptions.AccountNotFoundException;
+import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Data
+@NoArgsConstructor
 public class Bank {
+    private int id;
     private List<Account> accounts;
     private ATM atm;
 
-    public Bank() {
-        this.atm = new ATM(this);
-        this.accounts = new ArrayList<>();
-    }
+    private String name;
 
-    public int createAccount() {
-        int newAccountNumber = accounts.size() + 1;
-        int newAccountBalance = 0;
-        accounts.add(new Account(newAccountNumber, newAccountBalance));
-        return newAccountNumber;
-    }
-
-    protected Account accessAcctInfo(int acctNum) {
-        Optional<Account> accountOptional = findUserByAcctNum(acctNum);
-        return accountOptional.orElse(new Account());
-    }
-
-    protected boolean updateAcctBal(int acctNum, int diff) {
-        Optional<Account> accountToUpdateOptional = findUserByAcctNum(acctNum);
-
-        accountToUpdateOptional.ifPresent(acc -> {
-            int newBalance = acc.getAccountBalance() + diff;
-            acc.setAccountBalance(newBalance);
-        });
-
-        return true;
-    }
-
-    protected Optional<Account> findUserByAcctNum(int acctNum) {
-        Optional<Account> account = Optional.empty();
-        try {
-            account = Optional.of(accounts.stream()
-                    .filter(acc -> acc.getAccountNumber() == acctNum)
-                    .findFirst()
-                    .orElseThrow(() -> new AccountNotFoundException(acctNum)));
-        } catch (AccountNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        return account;
+    public Bank(int id, String name, List<Account> accounts) {
+        this.id = id;
+        this.name = name;
+        this.accounts = accounts;
+        this.atm = new ATM();
     }
 }

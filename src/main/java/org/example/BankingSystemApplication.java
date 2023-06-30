@@ -1,9 +1,9 @@
 package org.example;
 
-import org.example.app.ConsoleAppJava;
+import org.example.app.ConsoleAppJavaJdbc;
 
 public class BankingSystemApplication {
     public static void main(String[] args) {
-        ConsoleAppJava.start();
+        ConsoleAppJavaJdbc.start();
     }
 }
